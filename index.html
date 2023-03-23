@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Sky Angel</title>
+
+  <style>
+
+  </style>
+
+
+
+
+</head>
+
+
+<body>
+
+  <div id="parent">
+    <canvas id="canvas">Your browser not support TAG canvas </canvas>
+  </div>
+  <script>
+
+
+    let bg = new Image();
+    bg.src = "assets/bg.jpg"
+    let plane = new Image();
+    plane.src = "assets/planee.png"
+    let bird = new Image();
+    bird.src = "assets/bird.png"
+
+    let parachute = new Image();
+    parachute.src = "assets/pcute.png"
+
+
+    function canvasAction() {
+      document.addEventListener("keydown", function (e) {
+        if (e.keyCode === 38) {
+          plane1.y -= 5;
+        }
+        if (e.keyCode === 40) {
+          plane1.y += 5;
+        }
+
+        if (e.keyCode === 37) {
+          plane1.x -= 5;
+        }
+
+        if (e.keyCode === 39) {
+          plane1.x += 5;
+        }
+      })
+
+      // //countdown
+      // function countdown() {
+      //   //show the counter
+      //   counter--;
+      //   if (counter >= 0) {
+      //     span = document.getElementById("count");
+      //     span.innerHTML = counter;
+      //   }
+      //   if (counter === 0) {
+      //     clearInterval(counter);
+      //     alert("Game Over");
+      //   }
+      // }
+
+
+
+
+
+      let canvas = document.getElementById("canvas");
+      let ctx = canvas.getContext("2d");
+
+      //countdown to 10 displayed
+
+
+
+      canvas.width = canvas.scrollWidth
+      canvas.height = canvas.scrollHeight
+
+      let cW = canvas.width
+      let cH = canvas.height
+
+
+      // Bird location randomized
+      let birdData = [
+        // { "x": 850, "y": 150, "w": 50, "h": 51 },
+        // { "x": 900, "y": 250, "w": 50, "h": 51 }
+
+        { "x": 1000, "y": Math.floor(Math.random() * 500), "w": 50, "h": 51 },
+        { x: 1500, y: Math.floor(Math.random() * 500), w: 50, h: 51 },
+        { x: 2000, y: Math.floor(Math.random() * 500), w: 50, h: 51 },
+        { x: 2500, y: Math.floor(Math.random() * 500), w: 50, h: 51 },
+        { x: 3000, y: Math.floor(Math.random() * 500), w: 50, h: 51 },
+        { x: 3500, y: Math.floor(Math.random() * 500), w: 50, h: 51 },
+        { x: 4000, y: Math.floor(Math.random() * 500), w: 50, h: 51 },
+
+
+      ];
+
+      let parachuteData = [
+        { "x": 1000, "y": -100, "w": 50, "h": 51 },
+        { "x": 2000, "y": -700, "w": 50, "h": 51 },
+        { "x": 3000, "y": -1400, "w": 50, "h": 51 },
+
+
+      ]
+
+      //Drop parachute
+      function parachuteDrop() {
+        let counter = 10;
+
+        for (let i = 0; i < parachuteData.length; i++) {
+          let p = parachuteData[i];
+          ctx.drawImage(parachute, p.x -= 5, p.y += 3);
+
+          //display countdown counter
+          ctx.font = "30px Arial";
+          ctx.fillText(counter, 950, 50);
+
+
+          //counter countdown condition, if the counter is 0, the game is over, if hit parachute, counter add 1
+          // if (counter == 0) {
+          //   clearInterval(interval);
+          //   ctx.font = "30px Arial";
+          //   ctx.fillText("Game Over", 10, 50);
+
+          //   //restart button
+          //   ctx.font = "30px Arial";
+          //   ctx.fillText("Restart", 10, 135);
+          //   ctx.beginPath();
+          //   ctx.rect(10, 100, 100, 50);
+          //   ctx.stroke();
+          //   ctx.closePath();
+          //   canvas.addEventListener("click", function (e) {
+          //     if (e.offsetX > 10 && e.offsetX < 110 && e.offsetY > 100 && e.offsetY < 150) {
+          //       location.reload();
+          //     }
+          //   });
+          if ((p.x - 80 < plane1.x + plane1.w && p.y + p.h > plane1.y && p.y - 40 < plane1.y + plane1.h)) {
+            counter++;
+            p.x = 10000;
+            p.y = 0;
+          }
+
+          //counter display the number
+          counter--;
+
+
+          console.log(counter);
+
+        }
+      }
+
+
+      // Moving bird
+      function Bird() {
+        for (let i = 0; i < birdData.length; i++) {
+          let b = birdData[i];
+          ctx.drawImage(bird, b.x -= 5, b.y);
+
+
+          if ((b.x - 80 < plane1.x + plane1.w && b.y + b.h > plane1.y && b.y - 40 < plane1.y + plane1.h)) {
+            clearInterval(interval);
+            ctx.font = "30px Arial";
+            ctx.fillText("Game Over", 10, 50);
+
+            //restart button
+            ctx.font = "30px Arial";
+            ctx.fillText("Restart", 10, 135);
+            ctx.beginPath();
+            ctx.rect(10, 100, 100, 50);
+            ctx.stroke();
+            ctx.closePath();
+            canvas.addEventListener("click", function (e) {
+              if (e.offsetX > 10 && e.offsetX < 110 && e.offsetY > 100 && e.offsetY < 150) {
+                restart();
+              }
+            });
+          }
+
+        }
+      }
+
+
+      /// Moving background
+      function Bg() {
+        this.x = 0, this.y = 0;
+        this.render = function () {
+          ctx.drawImage(bg, this.x -= 5, this.y);
+          if (this.x === -2000) {
+            this.x = 0;
+          }
+        }
+      }
+
+
+      //Instantiate background
+      let back = new Bg();
+
+      //restart functionality
+      function restart() {
+        location.reload();
+      }
+
+
+      // Plane 
+      function Plane() {
+        this.x = 100, this.y = 200, this.w = 100, this.h = 50;
+        this.render = function () {
+          ctx.drawImage(plane, this.x, this.y);
+        }
+      }
+
+      //Instantiate plane
+      let plane1 = new Plane();
+
+
+      // Animation
+      function animation() {
+        ctx.save();
+        ctx.clearRect(0, 0, cW, cH);
+
+        back.render();
+        plane1.render();
+        Bird();
+        parachuteDrop();
+
+
+        ctx.restore();
+
+      }
+
+      let interval = setInterval(animation, 30);
+    }
+
+    window.onload = canvasAction;
+
+  </script>
+
+
+
+
+
+</body>
+
+</html>
